@@ -84,7 +84,7 @@ def part2():
         if is_not_safe:
             not_safe_counter += 1
 
-    safe_reports = len(reports) - is_not_safe
+    safe_reports = len(reports) - not_safe_counter
     return  safe_reports
 
 
