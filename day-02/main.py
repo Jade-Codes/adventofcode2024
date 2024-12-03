@@ -1,92 +1,54 @@
+def is_safe(nums):
+    for i in range(len(nums)-1):
+        a, b = nums[i], nums[i+1]
+        if not 1 <= abs(a-b) <= 3:
+            return False
 
-def is_all_increasing(first_number, second_number, third_number):
-    return first_number < second_number < third_number
+        if i == len(nums)-2:
+            continue
 
-def is_all_decreasing(first_number, second_number, third_number):
-    return first_number > second_number > third_number
+        c = nums[i+2]
 
-def is_in_range(first_number, second_number):
-    return 1 <= abs(first_number-second_number) <= 3
+        if not a < b < c and not a > b > c:
+            return False
+        
+    return True
 
 def part1():
     reports = []
-
     with open("input.txt") as file:
         reports = file.readlines()
 
-    is_not_safe = 0
-
+    safe_counter = 0
+    
     for report in reports:
         numbers = list(map(int, report.split(' ')))
 
-        for i in range(len(numbers)-1):
-            if is_in_range(numbers[i], numbers[i+1]) is False:
-                is_not_safe += 1
-                break
-
-            if i == 0:
-                continue
-
-            if is_all_increasing(numbers[i-1], numbers[i], numbers[i+1]) is False and \
-                is_all_decreasing(numbers[i-1], numbers[i], numbers[i+1]) is False:
-                is_not_safe += 1
-                break
+        if is_safe(numbers):
+            safe_counter += 1
     
-    safe_reports = len(reports) - is_not_safe
-    return  safe_reports
+    return safe_counter
+
 
 def part2():
     reports = []
-
     with open("input.txt") as file:
         reports = file.readlines()
 
-    not_safe_counter = 0
-
+    safe_counter = 0
+    
     for report in reports:
         numbers = list(map(int, report.split(' ')))
 
-        is_not_safe = False
-
-        for i in range(len(numbers)-2):
-            if is_in_range(numbers[i], numbers[i+1]) is False:
-                if is_in_range(numbers[i], numbers[i+2]) is False:
-                    is_not_safe = True
+        if is_safe(numbers):
+            safe_counter += 1
+        else:
+            for i in range(len(numbers)):
+                if is_safe(numbers[:i]+numbers[i+1:]):
+                    safe_counter += 1
                     break
-
-            if i == 0:
-                continue
-
-            if is_all_increasing(numbers[i-1], numbers[i], numbers[i+1]) is False and \
-                is_all_decreasing(numbers[i-1], numbers[i], numbers[i+1]) is False and \
-                is_all_increasing(numbers[i-1], numbers[i+1], numbers[i+2]) is False and \
-                is_all_decreasing(numbers[i-1], numbers[i+1], numbers[i+2]) is False:
-                    is_not_safe = True
-                    break
-
-        for i in range(len(numbers)-2):
-            numbers.reverse()
-            if is_in_range(numbers[i], numbers[i+1]) is False:
-                if is_in_range(numbers[i], numbers[i+2]) is False:
-                    is_not_safe = True
-                    break
-
-            if i == 0:
-                continue
-
-            if is_all_increasing(numbers[i-1], numbers[i], numbers[i+1]) is False and \
-                is_all_decreasing(numbers[i-1], numbers[i], numbers[i+1]) is False and \
-                is_all_increasing(numbers[i-1], numbers[i+1], numbers[i+2]) is False and \
-                is_all_decreasing(numbers[i-1], numbers[i+1], numbers[i+2]) is False:
-                    is_not_safe = True
-                    break
-            
-        if is_not_safe:
-            not_safe_counter += 1
-
-    safe_reports = len(reports) - not_safe_counter
-    return  safe_reports
-
+    
+    return safe_counter
 
 if __name__ == "__main__":
     print("Day 2, Part 1: " + str(part1()))
